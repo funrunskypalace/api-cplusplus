@@ -1,7 +1,6 @@
 /app_home
 /build
 /target
-/third/openorder/
 /CMakeLists.txt
 *.rar
 *.zip

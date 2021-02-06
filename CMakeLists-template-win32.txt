@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.5)
 set(CMAKE_SYSTEM_VERSION 10.0 CACHE STRING INTERNAL FORCE)
 set(ENV{OOSTYPE}   OpenOrder)
-set(ENV{OSVER}     win32)    # win32,win64,linux,etc.
+set(ENV{OSVER}     vs2017_x32)    # win32,win64,linux,etc.
 set(OSX86          on)
 
 ###################################################################################
@@ -165,6 +165,4 @@ link_directories (${OpenOrderDistDir}/target/lib)
 
 ### projects
 
-add_subdirectory(source)
-add_subdirectory(third)
-add_subdirectory(application)
+add_subdirectory(greatwall)

@@ -11,6 +11,6 @@ extern "C" __declspec(dllexport) void __cdecl
 #endif
 make(market::FilterContextPtr& context, market::MarketPluginPtr& plugin)
 {
-    std::cerr << "[DLL Attached] Hdf5Md market plugin." << std::endl;
+    std::cerr << "[DLL Attached] Md2DolphinDB market plugin." << std::endl;
     plugin = std::make_shared<Md2DolphindbPlugin>(context);
 }

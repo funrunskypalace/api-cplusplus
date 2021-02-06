@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.5)
 set(CMAKE_SYSTEM_VERSION 10.0 CACHE STRING INTERNAL FORCE)
 set(ENV{OOSTYPE}   OpenOrder)
-set(ENV{OSVER}     win64)    # win32,win64,linux,etc.
+set(ENV{OSVER}     vs2017_x64)    # win32,win64,linux,etc.
 set(OSX86          off)
 
 ###################################################################################
@@ -24,7 +24,7 @@ message("**                                                         **")
 message("**                                                         **")
 message("*************************************************************")
 
-set(DolphinDBGreatwallSrcDir    ${PROJECT_SOURCE_DIR})
+set(DolphinDBGreatwallSrcDir   ${PROJECT_SOURCE_DIR})
 set(OpenOrderDistDir           ${PROJECT_SOURCE_DIR})
 set(OrchidCommonLibraryRef     orchid_common_$ENV{OSVER}$<$<CONFIG:Debug>:d>)
 set(OpenOrderLibraryRef        OpenOrder_$ENV{OSVER}$<$<CONFIG:Debug>:d>)
@@ -163,6 +163,4 @@ link_directories (${OpenOrderDistDir}/target/lib)
 
 ### projects
 
-add_subdirectory(source)
-add_subdirectory(third)
-add_subdirectory(application)
+add_subdirectory(greatwall)
