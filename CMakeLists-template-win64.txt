@@ -3,11 +3,12 @@
 cmake_minimum_required(VERSION 3.5)
 set(CMAKE_SYSTEM_VERSION 10.0 CACHE STRING INTERNAL FORCE)
 set(ENV{OOSTYPE}   OpenOrder)
-set(ENV{OSVER}     vs2017_x64)    # win32,win64,linux,etc.
+set(ENV{OSVER}     win64)    # win32,win64,linux,etc.
 set(OSX86          off)
+set(DB_OSVER       vs2017_x64)
 
 ###################################################################################
-project(greatwall_adapters_$ENV{OSVER} VERSION 1.1.3 
+project(dolphindb_greatwall_$ENV{OSVER} VERSION 1.1.3 
         DESCRIPTION "C++ adapters on GreatWall"
         HOMEPAGE_URL http://greatwall.org
         LANGUAGES CXX )
@@ -28,6 +29,8 @@ set(DolphindbGreatWallSrcDir   ${PROJECT_SOURCE_DIR})
 set(OpenOrderDistDir           ${PROJECT_SOURCE_DIR})
 set(OrchidCommonLibraryRef     orchid_common_$ENV{OSVER}$<$<CONFIG:Debug>:d>)
 set(OpenOrderLibraryRef        OpenOrder_$ENV{OSVER}$<$<CONFIG:Debug>:d>)
+set(StratFrameworkCommonLibraryRef  strat_framework_common_$ENV{OSVER}$<$<CONFIG:Debug>:d>)
+set(StratFrameworkLibraryRef        skypalace_framework_$ENV{OSVER}$<$<CONFIG:Debug>:d>)
 set(CMAKE_MODULE_PATH          ${CMAKE_SOURCE_DIR}/CMake)
 set(CMAKE_SYSTEM_PREFIX_PATH   ${OpenOrderDistDir})
 include(cotire)
@@ -37,6 +40,8 @@ if(UNIX)
 else()
     include(PrecompiledHeader)
 endif()
+include(CheckCXXCompilerFlag)
+set(CMAKE_CXX_STANDARD 17)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING
@@ -57,7 +62,7 @@ else()
         set(BOOST_LIBRARY "/boost/win32/lib" )
     endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
-    add_definitions(-DWIN32)
+    add_definitions(-DWIN32 -D__NOMINMAX__)
     add_definitions(-D_WIN32_WINNT=0x0600)
     if(_CRT_NO_TIME_T)
         add_definitions(-D_CRT_NO_TIME_T)
@@ -68,7 +73,7 @@ endif()
 # Useful for displaying errors, warnings, and debugging
 message(STATUS," CMake project files for GreatWall, 2020-07-20")
 message("------------ Options -------------")
-message("DolphindbGreatWallSrcDir:            ${DolphindbGreatWallSrcDir}")
+message("DolphindbGreatWallSrcDir:     ${DolphindbGreatWallSrcDir}")
 message("CMAKE_CURRENT_SOURCE_DIR:     ${CMAKE_CURRENT_SOURCE_DIR}")
 message("PROJECT_BINARY_DIR:           ${PROJECT_BINARY_DIR}")
 message("CMAKE_BUILD_TYPE:             ${CMAKE_BUILD_TYPE}")
@@ -92,16 +97,9 @@ if (UNIX)
     add_compile_options(-g -fPIC -shared -std=c++11 -Wno-unused-variable -Wno-unknown-pragmas -Wno-unused-value
             -Wno-sign-compare -Wno-pragmas -Wno-pointer-arith -Wno-write-strings -Wno-main -Wno-unused-result
             -Wl,-Bsymbolic,--unresolved-symbols=ignore-in-object-files -Wno-unused-parameter)
+    ADD_DEFINITIONS(-g -w -O0 -W -Wall -DLINUX -D_REENTRANT -D_FILE_OFFSET_BITS=64 -DAC_HAS_INFO -DAC_HAS_WARNING -DAC_HAS_ERROR -DAC_HAS_CRITICAL -DTIXML_USE_STL -DHAVE_CXX_STDHEADERS -Wno-deprecated ${CMAKE_CXX_FLAGS})
 else()
     set(CMAKE_VS_INCLUDE_INSTALL_TO_DEFAULT_BUILD 1)
-#if (MSVC_VERSION GREATER_EQUAL "1900")
-#    include(CheckCXXCompilerFlag)
-#    CHECK_CXX_COMPILER_FLAG("/std:c++latest" _cpp_latest_flag_supported)
-#    if (_cpp_latest_flag_supported)
-#        add_compile_options("/std:c++latest")
-#    endif()
-#endif()
-    add_compile_options("/std:c++11")
 endif()
 
 # Set compiler flags and options. 
@@ -124,11 +122,6 @@ endif()
 # Properties->C/C++->General->Additional Include Directories
 include_directories (${DolphindbGreatWallSrcDir}/include)
 include_directories (${DolphindbGreatWallSrcDir}/source)
-include_directories (${DolphindbGreatWallSrcDir}/third)
-include_directories (${DolphindbGreatWallSrcDir}/application)
-include_directories (${DolphindbGreatWallSrcDir}/api/)
-include_directories (${DolphindbGreatWallSrcDir}/third/libevent/source/include/)
-include_directories (${DolphindbGreatWallSrcDir}/third/abseil-cpp/include)
 
 if(UNIX)
     include_directories (${DolphindbGreatWallSrcDir}/source/compat/linux)

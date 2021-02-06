@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <memory>
+#include <regex>
 
 #include "absl/synchronization/notification.h"
 #include "framework/common/common.h"
@@ -44,4 +45,5 @@ protected:
 private:
     std::unordered_map<std::string, std::regex> sub_instruments_;
     std::string dolphindb_address_ = {"127.0.0.1"};
+    int32_t dolphindb_port_ = {8503};
 };

@@ -27,15 +27,16 @@ int Md2DolphindbPlugin::load(const std::string& jsonContent)
         if (cfg["strategy"].contains("dolphindb_address"))
         {
             cfg["strategy"]["dolphindb_address"].get_to(dolphindb_address_);
+            cfg["strategy"]["dolphindb_port"].get_to(dolphindb_port_);
         }
 
-        for (auto inst : filecfg["strategy"]["instruments"])
+        for (auto inst : cfg["strategy"]["instruments"])
         {
             inst["insid"].get_to(temp);
             sub_instruments_.insert(std::make_pair(temp, std::regex(temp)));
             instrumentsstr += temp + ",";
         }
-        log(info, "Doing market data to dolphindb for instruments: {}.",
+        log(framework::info, "Doing market data to dolphindb for instruments: {}.",
             instrumentsstr);
     }
     catch (...)
@@ -49,39 +50,13 @@ int Md2DolphindbPlugin::load(const std::string& jsonContent)
 
 void Md2DolphindbPlugin::onLoaded()
 {
-    for (auto plugin : any_other_plugins_)
+    DBConnection conn;
+    bool ret = conn.connect(dolphindb_address_, dolphindb_port_);
+    if (!ret)
     {
-        log(framework::info, "Start with plugin:{}", plugin.second->id());
-        plugin.second->doCommandAsync(
-            commands_[plugin.first],
-            [&](int32_t retval, const std::string& cmdName,
-                const std::string& retmsg) -> int {
-                if ("loadticks" == cmdName)
-                {
-                    if (retmsg.size() != sizeof(ORDepthMarketDataField))
-                    {
-                        if (0 != retval)
-                        {
-                            log(framework::err,
-                                "Failed command {} execution, {}", cmdName,
-                                retmsg);
-                            return retval;
-                        }
-                        else
-                        {
-                            log(framework::info, "{} callback: {}", cmdName,
-                                retmsg);
-                            return retval;
-                        }
-                    }
-                    auto depth =
-                        reinterpret_cast<const ORDepthMarketDataField*>(
-                            retmsg.data());
-                    // @todo: writing data to dolphindb
-                    return 0;
-                }
-                return 0;
-            });
+        log(framework::warn, "Failed to connect to the server {}:{}", dolphindb_address_,
+            dolphindb_port_);
+        return ;
     }
 }
 

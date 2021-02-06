@@ -1,0 +1,9 @@
+{
+  "basic": {
+    "description": "load market data from hdf5 files using plugins like hdf5reader."
+  },
+  "strategy": {
+    "dolphindb_address": "127.0.0.1",
+    "dolphindb_port": 8503
+  },
+}

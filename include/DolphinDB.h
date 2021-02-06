@@ -25,7 +25,11 @@
 #include "SysIO.h"
 
 #ifdef _MSC_VER
+#ifdef DOLPHINDB_EXPORTS
 	#define EXPORT_DECL _declspec(dllexport)
+#else
+	#define EXPORT_DECL _declspec(dllimport)
+#endif
 #else
 	#define EXPORT_DECL 
 #endif
