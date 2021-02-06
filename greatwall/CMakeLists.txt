@@ -1,1 +1,1 @@
-add_subdirectory(md_to_dophindb)
+add_subdirectory(md_to_dolphindb)
