@@ -25,11 +25,7 @@
 #include "SysIO.h"
 
 #ifdef _MSC_VER
-#ifdef DOLPHINDB_EXPORTS
 	#define EXPORT_DECL _declspec(dllexport)
-#else
-	#define EXPORT_DECL _declspec(dllimport)
-#endif
 #else
 	#define EXPORT_DECL 
 #endif
@@ -617,7 +613,7 @@ protected:
 
 class EXPORT_DECL DBConnection {
 public:
-	DBConnection(bool enableSSL = false, bool asynTask = false);
+	DBConnection();
 	~DBConnection();
 	DBConnection(DBConnection&& oth);
 	DBConnection& operator=(DBConnection&& oth);
