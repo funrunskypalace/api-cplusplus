@@ -7,11 +7,9 @@
 #include "absl/synchronization/notification.h"
 #include "framework/common/common.h"
 #include "framework/market/mkt_plugin.h"
-#include "implugin/plugin.h"
 #include "ort/ORDataStruct.h"
 
 using namespace framework;
-using namespace imsimple;
 using namespace cycnoches;
 
 class Md2DolphindbPlugin : public market::MarketPlugin

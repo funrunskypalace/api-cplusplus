@@ -1,6 +1,4 @@
 set(StratRunnerSrcDir               ${DolphindbGreatWallSrcDir}/../SkyPalaceRunner)
-set(ImPluginSrcDir                  ${DolphindbGreatWallSrcDir}/../implugin)
-set(ImPluginLibraryRef              implugin_$ENV{OSVER}$<$<CONFIG:Debug>:d>)
 
 if (EXISTS "/usr/lib/libssl.so.1.0.0") # archlinux
     set(LIBSSL /usr/lib/libssl.so.1.0.0)
@@ -30,13 +28,10 @@ set_target_properties(md_to_dolphindb PROPERTIES OUTPUT_NAME "md_to_dolphindb_$E
 set_property(TARGET md_to_dolphindb PROPERTY FOLDER "strategy_dll")
 #add_dependencies(md_to_dolphindb )
 target_include_directories(md_to_dolphindb PRIVATE ${StratRunnerSrcDir}/include)
-target_include_directories(md_to_dolphindb PRIVATE ${ImPluginSrcDir}/include)
 target_include_directories(md_to_dolphindb PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_directories(md_to_dolphindb PRIVATE ${ImPluginSrcDir}/target/lib)
-target_link_directories(md_to_dolphindb PRIVATE ${ImPluginSrcDir}/target/lib$<$<CONFIG:Debug>:/Debug>)
 target_link_directories(md_to_dolphindb PRIVATE ${StratRunnerSrcDir}/target/lib)
 target_link_directories(md_to_dolphindb PRIVATE ${DolphindbGreatWallSrcDir}/bin/${DB_OSVER})
-target_link_libraries(md_to_dolphindb ${StratFrameworkLibraryRef} ${StratFrameworkCommonLibraryRef} ${ImPluginLibraryRef} ${platform_lib} )
+target_link_libraries(md_to_dolphindb ${StratFrameworkLibraryRef} ${StratFrameworkCommonLibraryRef} ${platform_lib} )
 
 if(UNIX)
 	target_link_libraries(md_to_dolphindb pthread dl DolphinDBAPI)

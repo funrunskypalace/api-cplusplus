@@ -8,19 +8,52 @@
 #include <regex>
 #include "DolphinDB.h"
 #include "Util.h"
+#include "framework/market/market.h"
 
 using namespace dolphindb;
 using namespace cycnoches::ort;
 
+int product_class_to_market_data_type(or_productclass_e product_class)
+{
+    switch (product_class)
+    {
+    case '3':
+        return 100;
+    case '1':
+        return 500;
+    case '2':
+        return 300;
+    default:
+        return 0;
+    }
+}
+
+or_productclass_e market_data_type_to_product_class(int market_data_type)
+{
+    switch (market_data_type)
+    {
+    case 100:
+        return '3';
+    case 500:
+        return '1';
+    case 300:
+        return '2';
+    default:
+        return '0';
+    }
+}
+
 Md2DolphindbPlugin::~Md2DolphindbPlugin()
 {
-    log(framework::info, "Md2DolphindbPlugin unloaded!");
+    log(framework::info, "market plugin {} unloaded!", globalUniqueName());
 }
 
 int Md2DolphindbPlugin::load(const std::string& jsonContent)
 {
-    std::string temp;
+    std::string temp, insid, exid;
     std::string instrumentsstr;
+    bool enableregex = false;
+    or_productclass_e pc;
     try
     {
         nlohmann::json cfg = nlohmann::json::parse(jsonContent);
@@ -32,11 +65,29 @@ int Md2DolphindbPlugin::load(const std::string& jsonContent)
 
         for (auto inst : cfg["strategy"]["instruments"])
         {
-            inst["insid"].get_to(temp);
-            sub_instruments_.insert(std::make_pair(temp, std::regex(temp)));
-            instrumentsstr += temp + ",";
+            inst["exid"].get_to(exid);
+            inst["insid"].get_to(insid);
+            sub_instruments_.insert(std::make_pair(insid, std::regex(insid)));
+            instrumentsstr += insid + ",";
+            inst["enable_regex"].get_to(enableregex);
+            inst["product_class"].get_to(temp);
+            if (temp.length() > 0)
+            {
+                pc = temp[0];
+            }
+            else
+            {
+                pc = OR_PC_Stock;
+            }
+            auto predicator =
+                std::make_shared<market::PredicatorObject>(enableregex, exid, insid);
+            context_->subscribe(product_class_to_market_data_type(pc), exid,
+                                 insid, predicator);
+            log(framework::info, "Subscribe market data for {}.{}", exid,
+                insid);
         }
-        log(framework::info, "Doing market data to dolphindb for instruments: {}.",
+        log(framework::info,
+            "Doing market data to dolphindb for instruments: {}.",
             instrumentsstr);
     }
     catch (...)
@@ -54,9 +105,9 @@ void Md2DolphindbPlugin::onLoaded()
     bool ret = conn.connect(dolphindb_address_, dolphindb_port_);
     if (!ret)
     {
-        log(framework::warn, "Failed to connect to the server {}:{}", dolphindb_address_,
-            dolphindb_port_);
-        return ;
+        log(framework::warn, "Failed to connect to the server {}:{}",
+            dolphindb_address_, dolphindb_port_);
+        return;
     }
 }
 

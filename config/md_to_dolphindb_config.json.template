@@ -4,6 +4,11 @@
   },
   "strategy": {
     "dolphindb_address": "127.0.0.1",
-    "dolphindb_port": 8503
-  },
+    "dolphindb_port": 8503,
+    "instruments": [
+      { "enable_regex": true, "product_class": "1", "exid": "CFFEX", "insid": "IO2102.*" },
+      { "enable_regex": true, "product_class": "1", "exid": "CFFEX", "insid": "IO2103.*" },
+      { "enable_regex": true, "product_class": "1", "exid": "CFFEX", "insid": "IO2104.*" }
+    ]
+  }
 }
