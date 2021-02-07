@@ -328,12 +328,16 @@ Required header files:
 
 ### 6.1 Vector
 
-​```C++
+Shows how to use vector with DolphinDB.
+
+```C++
 VectorSP v = conn.run("1..10");
 int size = v->size();
 for(int i = 0; i < size; ++i)
     cout<<v->getInt(i)<<endl;
 ```
+
+and the following sample:
 
 ```C++
 VectorSP v = conn.run("2010.10.01..2010.10.30");
@@ -377,7 +381,7 @@ cout<<table->getString()<<endl;
 ```
 
 #### 6.5.1 method `getString()`
-```C++
+​```C++
 cout<<table->getString()<<endl; 
 ```
 
