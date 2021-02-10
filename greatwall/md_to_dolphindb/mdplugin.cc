@@ -102,11 +102,20 @@ int Md2DolphindbPlugin::load(const std::string& jsonContent)
 void Md2DolphindbPlugin::onLoaded()
 {
     DBConnection conn;
-    bool ret = conn.connect(dolphindb_address_, dolphindb_port_);
-    if (!ret)
+    try
     {
-        log(framework::warn, "Failed to connect to the server {}:{}",
-            dolphindb_address_, dolphindb_port_);
+        bool ret = conn.connect(dolphindb_address_, dolphindb_port_, "admin", "123456");
+        if (!ret)
+        {
+            log(framework::critical, "Failed to connect to dolphindb server {}:{}",
+                dolphindb_address_, dolphindb_port_);
+            return;
+        }
+    }
+    catch (const std::exception& ex)
+    {
+        log(framework::critical, "Failed to connect to dolphindb server {}:{}, {}",
+            dolphindb_address_, dolphindb_port_, ex.what());
         return;
     }
 }
