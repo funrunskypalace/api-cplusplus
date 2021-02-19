@@ -59,7 +59,7 @@ else()
         set(BOOST_LIBRARY "/boost/win32/lib" )
     endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
 
-    add_definitions(-DWIN32)
+    add_definitions(-DWIN32 -D_WIN32)
     add_definitions(-D_WIN32_WINNT=0x0600)
     if(_CRT_NO_TIME_T)
         add_definitions(-D_CRT_NO_TIME_T)
